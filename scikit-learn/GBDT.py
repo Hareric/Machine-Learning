@@ -2,6 +2,7 @@
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn import metrics
+from sklearn.externals import joblib
 
 
 def pandas_read(file_name, column_list, index_column=None, split_with='\t', encoding=None):
@@ -40,18 +41,20 @@ if __name__ == '__main__':
     common_user = set(train_y.index.values).intersection(train_X.index.values)
     train_X = train_X.loc[common_user]
     train_y = train_y.loc[common_user]
+    print train_X.head(5)
+    print train_y.head(5)
 
     # 测试集
     test_X = pandas_read('dataSet/微博用户样本数据/testX.txt', column_list,
                          index_column='用户名', encoding='utf-8')
     test_y = pandas_read('dataSet/微博用户样本数据/testy.txt', ['用户名', '是否为重要用户'],
                          index_column='用户名', encoding='utf-8')
-    print '训练集'
-    print train_X.head(5)
-    print train_y.head(5)
 
-    # GBDT
+    # GBDT训练及测试
     gbdt = GradientBoostingClassifier()
     gbdt.fit(train_X, train_y)
     predicted = gbdt.predict(test_X)
     print metrics.classification_report(test_y, predicted)
+
+    # 保存模型
+    joblib.dump(gbdt, 'gbdt.pkl')
