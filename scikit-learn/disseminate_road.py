@@ -3,7 +3,6 @@ from GBDT import pandas_read
 from sklearn.externals import joblib
 import pandas as pd
 import os
-import numpy as np
 
 
 def load_file(file_name, charset='utf-8'):
@@ -68,7 +67,7 @@ class RoadProcess:
         if num >= 3:
             # print infos
             # print predict, num
-            print '~'.join(name_list)
+            # print '~'.join(name_list)
             # print '--------------------'
             return True
         else:
@@ -84,19 +83,19 @@ class RoadProcess:
         for line in line_list:
             name_list = line.split(',')
             if self.road_filter(name_list):
-
                 new_line_list.append('~'.join(name_list))
         return new_line_list
 
     def run(self, path):
         file_dirs = os.walk(path)
+        path_list = []
         for root, dirs, files in file_dirs:
             for file in files:
                 if file == 'path.txt':
                     lines = load_file(root+'/'+file)
-                    new_lines = self.file_pro(lines)
-                    write_file(root+'/'+'path_new.txt', new_lines)
-                    print root, 'Finish!\n*******************************************'
+                    path_list += self.file_pro(lines)
+                    print root, 'Finish!'
+        write_file(path+'/'+'incident_path.txt', path_list)
 
     def __init__(self):
         column_list = ['用户ID', '用户名', '关注数', '粉丝数', '博客数', '是否大v', '首页转发数', '首页评论数', '首页点赞数']
@@ -114,4 +113,7 @@ class RoadProcess:
 
 if __name__ == '__main__':
     a = RoadProcess()
-    a.run('dataSet/path')
+    # a.run('dataSet/path/林丹出轨')
+    a.run('dataSet/path/罗一笑')
+    # a.run('dataSet/path/裸贷')
+    # f = open('dataSet/path/林丹出轨/das.txt', 'w')
